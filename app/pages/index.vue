@@ -13,6 +13,7 @@ const inspirations = ref<any[]>([]);
 const page = ref(1);
 const loading = ref(false);
 const hasNext = ref(true);
+const searchDuration = ref<number | null>(null);
 
 const { y } = useWindowScroll();
 
@@ -27,9 +28,12 @@ const fetchData = async (reset = false) => {
     // inspirations are only fetched on page 1 / first load usually, but let's keep it simple
     inspirations.value = []; 
     hasNext.value = true;
+    searchDuration.value = null;
   }
 
   try {
+    const startTime = performance.now();
+    
     const { data } = await useFetch<SearchResponse>(`${config.public.apiBase}/search`, {
       params: {
         query: searchQuery.value,
@@ -37,6 +41,9 @@ const fetchData = async (reset = false) => {
         page_size: 10
       }
     });
+
+    const endTime = performance.now();
+    searchDuration.value = endTime - startTime;
 
     if (data.value && data.value.success) {
       // Handle Products
@@ -121,6 +128,12 @@ onUnmounted(() => {
     </div>
 
     <div class="p-4 flex-1 overflow-y-auto">
+        <!-- Search Info Bar -->
+        <div v-if="searchDuration !== null && !loading" class="mb-4 text-xs text-gray-500 flex items-center gap-2">
+            <i class="pi pi-clock"></i>
+            <span>Fetched in <strong class="text-green-400">{{ searchDuration.toFixed(2) }} ms</strong></span>
+        </div>
+
         <!-- Super Inspiration Section -->
         <div v-if="inspirations.length > 0" class="mb-8">
             <h2 class="text-lg font-bold mb-4 text-white flex items-center">
