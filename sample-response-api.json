@@ -1,0 +1,274 @@
+{
+    "success": true,
+    "query": "uht",
+    "results": {
+        "product": [
+            {
+                "id": "651052597ebecc2b5c060ea7",
+                "score": 0.70639306,
+                "score_original": 0.70639306,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "ULTRA MIMI SUSU UHT FULL CREAM TPK 125ML ULTRA MIMI SUSU UHT FULL CREAM  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, ULTRA MIMI F/CRM125, ULTRA MIMI SUSU UHT FULL CREAM TPK 125ML",
+                    "created_at": "2023-09-24T15:14:33.137000",
+                    "discount_price": 0.0,
+                    "id": "651052597ebecc2b5c060ea7",
+                    "images": [
+                        "products/0730427.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "ULTRA MIMI SUSU UHT FULL CREAM TPK 125ML",
+                    "product_sugar_level": "none",
+                    "promos": "[{\"promo_code\": \"PKD4KA0002\", \"promo_type\": \"HEMAT\", \"discount_value\": 3000, \"discount_type\": \"Package\", \"min_purchase\": 0, \"periode_start_date\": \"10/11/2024\", \"periode_starttime\": \"00:00:00\", \"periode_end_date\": \"31/12/2025\", \"periode_endtime\": \"00:00:00\", \"max_qty\": 0, \"active_days\": \"YYYYYYY\", \"discount_percentage\": 0, \"price_type\": \"bundling-hemat-member\", \"min_purchase_qty\": 40, \"is_pack_disc\": false, \"disc_code\": \"\"}]",
+                    "selling_price": 2990.0,
+                    "store": "PCA",
+                    "updated_at": "2025-10-23T06:46:10.240000",
+                    "updated_by": "sync",
+                    "vector_score": 0.227073371
+                }
+            },
+            {
+                "id": "651052597ebecc2b5c060ae1",
+                "score": 0.7044652,
+                "score_original": 0.7044652,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "ULTRA SUSU UHT STROBERI TPK 125ML ULTRA SUSU UHT STROBERI  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, ULTRA STB125, ULTRA SUSU UHT STROBERI TPK 125ML",
+                    "created_at": "2023-09-24T15:14:33.133000",
+                    "discount_price": 0.0,
+                    "id": "651052597ebecc2b5c060ae1",
+                    "images": [
+                        "products/0730339.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "ULTRA SUSU UHT STROBERI TPK 125ML",
+                    "product_sugar_level": "none",
+                    "promos": "[]",
+                    "selling_price": 3390.0,
+                    "store": "PCA",
+                    "updated_at": "2025-10-23T06:46:10.242000",
+                    "updated_by": "sync",
+                    "vector_score": 0.209275782
+                }
+            },
+            {
+                "id": "651052597ebecc2b5c067b21",
+                "score": 0.702428,
+                "score_original": 0.702428,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "MILO SUSU UHT BDD 4X110GR MILO SUSU UHT  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, MILO SUSU UHT4X110, MILO SUSU UHT BDD 4X110GR",
+                    "created_at": "2023-09-24T15:14:33.353000",
+                    "discount_price": 0.0,
+                    "id": "651052597ebecc2b5c067b21",
+                    "images": [
+                        "products/0930825.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "MILO SUSU UHT BDD 4X110GR",
+                    "product_sugar_level": "none",
+                    "promos": "[]",
+                    "selling_price": 12590.0,
+                    "store": "PCA",
+                    "updated_at": "2025-11-03T07:50:59.877000",
+                    "updated_by": "sync",
+                    "vector_score": 0.21739386
+                }
+            },
+            {
+                "id": "65dd138a564fcdb21dfd7831",
+                "score": 0.7001778,
+                "score_original": 0.7001778,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "FRISIAN FLAG SUSU UHT KETAN HITAM TPK 225ML FRISIAN FLAG SUSU UHT KETAN HITAM  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, FRISIAN UHT K/HTM225, FRISIAN FLAG SUSU UHT KETAN HITAM TPK 225ML",
+                    "created_at": "2024-02-26T22:41:14.899000",
+                    "discount_price": 0.0,
+                    "id": "65dd138a564fcdb21dfd7831",
+                    "images": [
+                        "products/0930743.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "FRISIAN FLAG SUSU UHT KETAN HITAM TPK 225ML",
+                    "product_sugar_level": "none",
+                    "promos": "[]",
+                    "selling_price": 5890.0,
+                    "store": "PCA",
+                    "updated_at": "2025-10-23T06:46:10.526000",
+                    "updated_by": "sync",
+                    "vector_score": 0.235736415
+                }
+            },
+            {
+                "id": "651052597ebecc2b5c060024",
+                "score": 0.69564825,
+                "score_original": 0.69564825,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "ULTRA SUSU UHT PLAIN TPK 200ML ULTRA SUSU UHT PLAIN  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, ULTRA PLN 200, ULTRA SUSU UHT PLAIN TPK 200ML",
+                    "created_at": "2023-09-24T15:14:33.119000",
+                    "discount_price": 0.0,
+                    "id": "651052597ebecc2b5c060024",
+                    "images": [
+                        "products/0730008.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "ULTRA SUSU UHT PLAIN TPK 200ML",
+                    "product_sugar_level": "none",
+                    "promos": "[]",
+                    "selling_price": 4990.0,
+                    "store": "PCA",
+                    "updated_at": "2025-10-23T06:46:10.242000",
+                    "updated_by": "sync",
+                    "vector_score": 0.235530823
+                }
+            },
+            {
+                "id": "651052597ebecc2b5c05ff3a",
+                "score": 0.68700033,
+                "score_original": 0.68700033,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "ULTRA SUSU UHT PLAIN TPK 250ML ULTRA SUSU UHT PLAIN  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, ULTRA PLN 250, ULTRA SUSU UHT PLAIN TPK 250ML",
+                    "created_at": "2023-09-24T15:14:33.118000",
+                    "discount_price": 0.0,
+                    "id": "651052597ebecc2b5c05ff3a",
+                    "images": [
+                        "products/0710116.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "ULTRA SUSU UHT PLAIN TPK 250ML",
+                    "product_sugar_level": "none",
+                    "promos": "[]",
+                    "selling_price": 6490.0,
+                    "store": "PCA",
+                    "updated_at": "2025-10-23T06:46:10.242000",
+                    "updated_by": "sync",
+                    "vector_score": 0.25301367
+                }
+            },
+            {
+                "id": "651052597ebecc2b5c05feba",
+                "score": 0.674265,
+                "score_original": 0.674265,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "ULTRA SUSU UHT STROBERI TPK 250ML ULTRA SUSU UHT STRAWBERRY  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, ULTRA STW 250, ULTRA SUSU UHT STROBERI TPK 250ML",
+                    "created_at": "2023-09-24T15:14:33.118000",
+                    "discount_price": 0.0,
+                    "id": "651052597ebecc2b5c05feba",
+                    "images": [
+                        "products/0710114.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "ULTRA SUSU UHT STROBERI TPK 250ML",
+                    "product_sugar_level": "none",
+                    "promos": "[]",
+                    "selling_price": 6490.0,
+                    "store": "PCA",
+                    "updated_at": "2025-10-23T06:46:10.242000",
+                    "updated_by": "sync",
+                    "vector_score": 0.216605216
+                }
+            },
+            {
+                "id": "651054bcb81bb39504006c3b",
+                "score": 0.66714764,
+                "score_original": 0.66714764,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "ULTRA LOW FAT SUSU UHT PLAIN TPK 1000ML ULTRA LOW FAT SUSU UHT PLAIN  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, ULTRA LF PLN 1L, ULTRA LOW FAT SUSU UHT PLAIN TPK 1000ML",
+                    "created_at": "2023-09-24T15:24:44.958000",
+                    "discount_price": 0.0,
+                    "id": "651054bcb81bb39504006c3b",
+                    "images": [
+                        "products/9000082.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "ULTRA LOW FAT SUSU UHT PLAIN TPK 1000ML",
+                    "product_sugar_level": "none",
+                    "promos": "[{\"promo_code\": \"PCK5JS0007\", \"promo_type\": \"InStore Promo\", \"discount_value\": 19950, \"discount_type\": \"Package\", \"min_purchase\": 0, \"periode_start_date\": \"30/10/2025\", \"periode_starttime\": \"00:00:00\", \"periode_end_date\": \"05/11/2025\", \"periode_endtime\": \"00:00:00\", \"max_qty\": 0, \"active_days\": \"YYYYYYY\", \"discount_percentage\": 0, \"price_type\": \"bundling-hemat\", \"min_purchase_qty\": 2, \"is_pack_disc\": false, \"disc_code\": \"\"}]",
+                    "selling_price": 22690.0,
+                    "store": "PCA",
+                    "updated_at": "2025-11-03T07:50:51.837000",
+                    "updated_by": "sync",
+                    "vector_score": 0.222824484
+                }
+            },
+            {
+                "id": "651052597ebecc2b5c05fdb9",
+                "score": 0.6668223,
+                "score_original": 0.6668223,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "ULTRA SUSU UHT PLAIN TPK 1000ML ULTRA SUSU UHT PLAIN  | This product category is LIQUID  | This product sugar level is <=0.5 gr  | This product tags are SUSU UHT, ULTRA PLN 1L, ULTRA SUSU UHT PLAIN TPK 1000ML",
+                    "created_at": "2023-11-06T10:21:07.626000",
+                    "discount_price": 0.0,
+                    "id": "651052597ebecc2b5c05fdb9",
+                    "images": [
+                        "products/0710024"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "ULTRA SUSU UHT PLAIN TPK 1000ML",
+                    "product_sugar_level": "<=0.5 gr",
+                    "promos": "[{\"promo_code\": \"PCK5KP0004\", \"promo_type\": \"HEMAT\", \"discount_value\": 16666, \"discount_type\": \"Package\", \"min_purchase\": 0, \"periode_start_date\": \"27/11/2025\", \"periode_starttime\": \"00:00:00\", \"periode_end_date\": \"03/12/2030\", \"periode_endtime\": \"00:00:00\", \"max_qty\": 0.0, \"active_days\": \"YYYYYYY\", \"discount_percentage\": 0, \"price_type\": \"bundling-hemat\", \"min_purchase_qty\": 3, \"is_pack_disc\": true, \"disc_code\": \"\"}]",
+                    "selling_price": 19190.0,
+                    "store": "PCA",
+                    "updated_at": "2026-01-08T04:38:00.126000",
+                    "updated_by": "7f162ea5-b918-4c95-bdb3-a540fae4c3ff",
+                    "vector_score": 0.223653078
+                }
+            },
+            {
+                "id": "65dd138a564fcdb21dfd7826",
+                "score": 0.6629056,
+                "score_original": 0.6629056,
+                "boosted": false,
+                "document": {
+                    "chunk_text": "NUTRIBOOST SUSU UHT COFFEE TPK 180ML NUTRIBOOST SUSU UHT COFFEE  | This product category is LIQUID  | This product sugar level is none  | This product tags are SUSU UHT, NUTRIBOST UHT CF180, NUTRIBOOST SUSU UHT COFFEE TPK 180ML",
+                    "created_at": "2024-02-26T22:41:14.892000",
+                    "discount_price": 0.0,
+                    "id": "65dd138a564fcdb21dfd7826",
+                    "images": [
+                        "products/0930755.jpg"
+                    ],
+                    "product_categories": "LIQUID",
+                    "product_name": "NUTRIBOOST SUSU UHT COFFEE TPK 180ML",
+                    "product_sugar_level": "none",
+                    "promos": "[]",
+                    "selling_price": 3990.0,
+                    "store": "PCA",
+                    "updated_at": "2025-10-23T06:46:10.526000",
+                    "updated_by": "sync",
+                    "vector_score": 0.248146221
+                }
+            }
+        ],
+        "super_inspiration": [
+            {
+                "id": null,
+                "score": 0.2155158,
+                "document": {
+                    "banner_content": "<p>Kiwi Mini Tart</p><p>Bahan Kulit Tart :&nbsp;<br>150 gr tepung terigu protein rendah&nbsp;<br>75 gr mentega dingin (potong dadu kecil)<br>2 sdm gula halus<br>1 butir kuning telur<br>1–2 sdm air es</p><p>Bahan Vla Susu (Isi):<br>200 ml susu cair UHT (boleh full cream atau low-fat)<br>2 sdm gula pasir<br>1 sdm maizena, larutkan dengan 2 sdm air<br>1/2 sdt vanila ekstrak</p><p>Topping:<br>2 buah kiwi matang, kupas dan iris tipis</p><p><br>Cara Membuat:<br>1. Dalam wadah besar, campur tepung dan gula halus lalu masukkan mentega dingin, aduk menggunakan ujung jari hingga tekstur berpasir (mirip crumble).<br>2. Tambahkan kuning telur dan air es sedikit demi sedikit kemudian uleni ringan (jangan overmix), lalu bulatkan adonan dan bungkus plastik wrap.<br>3. Istirahatkan di kulkas ±20–30 menit lalu keluarkan adonan, pipihkan, dan cetak ke dalam loyang mini pie atau cetakan muffin kecil.<br>4. Tusuk dasar kulit dengan garpu agar tidak mengembang dan panggang suhu 170°C selama 20–25 menit atau sampai keemas an lalu dinginkan<br>5. Untuk membuat fla rebus susu dan gula dengan api kecil hingga mendidih kemudian tambahkan larutan maizena sambil terus diaduk hingga mengental.<br>6. Matikan api, masukkan vanila, aduk rata.<br>7. Dinginkan hingga suhu ruang (tutup permukaan vla dengan plastik wrap agar tidak berkulit).<br>8. Ambil kulit tart yang sudah dingin, isi dengan vla susu lalu tata irisan kiwi di atasnya dan simpan dalam kulkas minimal 30 menit sebelum disajikan.<br>&nbsp;</p>",
+                    "banner_share_thumbnail": "banner/2025-08-02/1754280882765371776-30 at 3.17.46 PM.jpeg",
+                    "category": "recipe",
+                    "chunk_text": "Kiwi Tart Mini Kiwi Tart Mini Difficulty: Sedang <p>Kiwi Mini Tart</p><p>Bahan Kulit Tart :&nbsp;<br>150 gr tepung terigu protein rendah&nbsp;<br>75 gr mentega dingin (potong dadu kecil)<br>2 sdm gula halus<br>1 butir kuning telur<br>1–2 sdm air es</p><p>Bahan Vla Susu (Isi):<br>200 ml susu cair UHT (boleh full cream atau low-fat)<br>2 sdm gula pasir<br>1 sdm maizena, larutkan dengan 2 sdm air<br>1/2 sdt vanila ekstrak</p><p>Topping:<br>2 buah kiwi matang, kupas dan iris tipis</p><p><br>Cara Membuat:<br>1. Dalam wadah besar, campur tepung dan gula halus lalu masukkan mentega dingin, aduk menggunakan ujung jari hingga tekstur berpasir (mirip crumble).<br>2. Tambahkan kuning telur dan air es sedikit demi sedikit kemudian uleni ringan (jangan overmix), lalu bulatkan adonan dan bungkus plastik wrap.<br>3. Istirahatkan di kulkas ±20–30 menit lalu keluarkan adonan, pipihkan, dan cetak ke dalam loyang mini pie atau cetakan muffin kecil.<br>4. Tusuk dasar kulit dengan garpu agar tidak mengembang dan panggang suhu 170°C selama 20–25 menit atau sampai keemas an lalu dinginkan<br>5. Untuk membuat fla rebus susu dan gula dengan api kecil hingga mendidih kemudian tambahkan larutan maizena sambil terus diaduk hingga mengental.<br>6. Matikan api, masukkan vanila, aduk rata.<br>7. Dinginkan hingga suhu ruang (tutup permukaan vla dengan plastik wrap agar tidak berkulit).<br>8. Ambil kulit tart yang sudah dingin, isi dengan vla susu lalu tata irisan kiwi di atasnya dan simpan dalam kulkas minimal 30 menit sebelum disajikan.<br>&nbsp;</p>",
+                    "cook_time": 60.0,
+                    "description": "Kiwi Tart Mini",
+                    "difficulty": "Sedang",
+                    "image": "banner/2025-08-02/1754280882522828172-1754280872044300376-WhatsApp Image 2025-07-30 at 3_duplicate_1.jpeg",
+                    "portion": ">5",
+                    "title": "Kiwi Tart Mini"
+                }
+            }
+        ]
+    },
+    "pagination": {
+        "page": 1,
+        "page_size": 10,
+        "total_results": 100,
+        "total_pages": 10,
+        "has_next": true,
+        "has_prev": false
+    }
+}
