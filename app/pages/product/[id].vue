@@ -25,13 +25,15 @@ const loading = ref(true);
 
 const similarProducts = ref<any[]>([]);
 const similarLoading = ref(false);
+const similarProvider = ref('pinecone'); // 'pinecone' | 'elasticsearch'
 
 const fetchSimilarProducts = async () => {
     if (!product.value?.id) return;
     
     similarLoading.value = true;
     try {
-        const { data } = await useFetch<any>(`${config.public.apiBase}/similar-product`, {
+        const endpoint = similarProvider.value === 'elasticsearch' ? '/similar-product-es' : '/similar-product';
+        const { data } = await useFetch<any>(`${config.public.apiBase}${endpoint}`, {
             params: {
                 product_id: product.value.id
             }
@@ -99,6 +101,10 @@ const fetchProductDetail = async () => {
 
 onMounted(() => {
     fetchProductDetail();
+});
+
+watch(similarProvider, () => {
+    fetchSimilarProducts();
 });
 
 const imageUrl = computed(() => {
@@ -171,7 +177,13 @@ const formatPrice = (price: number) => {
             
             <!-- Similar Products Section -->
             <div class="mt-8 border-t border-gray-800 pt-6">
-                <h3 class="font-bold text-lg text-white mb-4">Similar Products</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg text-white">Similar Products</h3>
+                    <select v-model="similarProvider" class="bg-gray-800 text-white text-xs rounded-lg focus:ring-green-500 focus:border-green-500 block p-2 border border-gray-700">
+                        <option value="pinecone">Pinecone</option>
+                        <option value="elasticsearch">Elasticsearch</option>
+                    </select>
+                </div>
                 
                 <div v-if="similarLoading" class="flex justify-center py-4">
                     <i class="pi pi-spin pi-spinner text-green-500 text-2xl"></i>

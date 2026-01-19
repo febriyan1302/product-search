@@ -14,6 +14,7 @@ const page = ref(1);
 const loading = ref(false);
 const hasNext = ref(true);
 const searchDuration = ref<number | null>(null);
+const searchProvider = ref('pinecone'); // 'pinecone' | 'elasticsearch'
 
 const { y } = useWindowScroll();
 
@@ -34,7 +35,8 @@ const fetchData = async (reset = false) => {
   try {
     const startTime = performance.now();
     
-    const { data } = await useFetch<SearchResponse>(`${config.public.apiBase}/search`, {
+    const endpoint = searchProvider.value === 'elasticsearch' ? '/search-es' : '/search';
+    const { data } = await useFetch<SearchResponse>(`${config.public.apiBase}${endpoint}`, {
       params: {
         query: searchQuery.value,
         page: page.value,
@@ -95,6 +97,11 @@ watch(() => route.query.query, (newQuery) => {
     }
 });
 
+// Watch provider change
+watch(searchProvider, () => {
+    fetchData(true);
+});
+
 
 // Infinite Scroll Logic
 // Simple implementation: Check if bottom of page is reached
@@ -120,11 +127,18 @@ onUnmounted(() => {
 <template>
   <div class="max-w-md mx-auto bg-gray-900 min-h-screen shadow-2xl overflow-hidden flex flex-col border-x border-gray-800">
     <!-- Search Header -->
-    <div class="sticky top-0 z-50 bg-gray-900 p-4 shadow-md border-b border-gray-800">
-        <IconField iconPosition="left">
+    <div class="sticky top-0 z-50 bg-gray-900 p-4 shadow-md border-b border-gray-800 flex items-center gap-2">
+        <IconField iconPosition="left" class="flex-1">
             <InputIcon class="pi pi-search text-gray-400" />
             <InputText v-model="searchQuery" placeholder="Search products..." class="w-full rounded-full bg-gray-800 border-gray-700 text-white placeholder-gray-500 px-10 py-3 focus:ring-green-500 focus:border-green-500" @keydown.enter="onSearch" />
         </IconField>
+        
+        <div class="ml-2">
+            <select v-model="searchProvider" class="bg-gray-800 text-white text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 border border-gray-700">
+                <option value="pinecone">Pinecone</option>
+                <option value="elasticsearch">Elasticsearch</option>
+            </select>
+        </div>
     </div>
 
     <div class="p-4 flex-1 overflow-y-auto">

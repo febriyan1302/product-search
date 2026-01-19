@@ -3,6 +3,7 @@ const props = defineProps<{
   product: {
     id: string;
     boosted: boolean;
+    score?: number;
     document: {
       product_name: string;
       selling_price: number;
@@ -52,8 +53,13 @@ const handleImageError = (e: Event) => {
         </div>
     </template>
     <template #content>
-        <div class="text-green-400 font-bold text-lg">
-            {{ formatPrice(product.document.selling_price) }}
+        <div class="flex justify-between items-end">
+            <div class="text-green-400 font-bold text-lg">
+                {{ formatPrice(product.document.selling_price) }}
+            </div>
+            <div v-if="product.score !== undefined" class="text-[10px] text-gray-500 bg-gray-900 px-1.5 py-0.5 rounded border border-gray-700">
+              {{ product.score.toFixed(4) }}
+            </div>
         </div>
     </template>
     <template #footer>
