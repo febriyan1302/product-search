@@ -15,6 +15,8 @@ const loading = ref(false);
 const hasNext = ref(true);
 const searchDuration = ref<number | null>(null);
 const searchProvider = ref('pinecone'); // 'pinecone' | 'elasticsearch'
+const autoCorrect = ref(true);
+const correctionMessage = ref('');
 
 const { y } = useWindowScroll();
 
@@ -36,6 +38,30 @@ const fetchData = async (reset = false) => {
     const startTime = performance.now();
     
     const endpoint = searchProvider.value === 'elasticsearch' ? '/search-es' : '/search';
+    
+    // Auto-correction logic
+    if (reset && autoCorrect.value && searchQuery.value.trim()) {
+        try {
+            const { data: typoData } = await useFetch<any>(`${config.public.apiBase}/correct-typo`, {
+                params: { query: searchQuery.value }
+            });
+
+            if (typoData.value && typoData.value.is_corrected) {
+                correctionMessage.value = `No results found for "${typoData.value.original}". Showing results for "${typoData.value.final_corrected}".`;
+                searchQuery.value = typoData.value.final_corrected;
+                // Update URL to match corrected query without triggering another fetch due to watch
+                 router.replace({ query: { ...route.query, query: searchQuery.value } });
+            } else {
+                 correctionMessage.value = '';
+            }
+        } catch (e) {
+            console.error("Typo correction failed", e);
+             correctionMessage.value = '';
+        }
+    } else if (reset) {
+         correctionMessage.value = '';
+    }
+
     const { data } = await useFetch<SearchResponse>(`${config.public.apiBase}${endpoint}`, {
       params: {
         query: searchQuery.value,
@@ -127,25 +153,39 @@ onUnmounted(() => {
 <template>
   <div class="max-w-md mx-auto bg-gray-900 min-h-screen shadow-2xl overflow-hidden flex flex-col border-x border-gray-800">
     <!-- Search Header -->
-    <div class="sticky top-0 z-50 bg-gray-900 p-4 shadow-md border-b border-gray-800 flex items-center gap-2">
-        <IconField iconPosition="left" class="flex-1">
-            <InputIcon class="pi pi-search text-gray-400" />
-            <InputText v-model="searchQuery" placeholder="Search products..." class="w-full rounded-full bg-gray-800 border-gray-700 text-white placeholder-gray-500 px-10 py-3 focus:ring-green-500 focus:border-green-500" @keydown.enter="onSearch" />
-        </IconField>
+    <div class="sticky top-0 z-50 bg-gray-900 p-4 shadow-md border-b border-gray-800 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+            <IconField iconPosition="left" class="flex-1">
+                <InputIcon class="pi pi-search text-gray-400" />
+                <InputText v-model="searchQuery" placeholder="Search products..." class="w-full rounded-full bg-gray-800 border-gray-700 text-white placeholder-gray-500 px-10 py-3 focus:ring-green-500 focus:border-green-500" @keydown.enter="onSearch" />
+            </IconField>
+            
+            <div class="ml-2 flex items-center gap-2">
+                <select v-model="searchProvider" class="bg-gray-800 text-white text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 border border-gray-700">
+                    <option value="pinecone">Pinecone</option>
+                    <option value="elasticsearch">Elasticsearch</option>
+                </select>
+            </div>
+        </div>
         
-        <div class="ml-2">
-            <select v-model="searchProvider" class="bg-gray-800 text-white text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 border border-gray-700">
-                <option value="pinecone">Pinecone</option>
-                <option value="elasticsearch">Elasticsearch</option>
-            </select>
+        <div class="flex items-center justify-between px-2">
+             <div class="flex items-center gap-2 text-white text-sm">
+                <label for="auto-correct" class="cursor-pointer select-none">Auto Spelling Correction</label>
+                 <InputSwitch id="auto-correct" v-model="autoCorrect" />
+            </div>
         </div>
     </div>
 
     <div class="p-4 flex-1 overflow-y-auto">
         <!-- Search Info Bar -->
-        <div v-if="searchDuration !== null && !loading" class="mb-4 text-xs text-gray-500 flex items-center gap-2">
-            <i class="pi pi-clock"></i>
-            <span>Fetched in <strong class="text-green-400">{{ searchDuration.toFixed(2) }} ms</strong></span>
+        <div v-if="searchDuration !== null && !loading" class="mb-4 text-xs text-gray-500 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                 <i class="pi pi-clock"></i>
+                <span>Fetched in <strong class="text-green-400">{{ searchDuration.toFixed(2) }} ms</strong></span>
+            </div>
+             <div v-if="correctionMessage" class="text-yellow-500 italic">
+                {{ correctionMessage }}
+            </div>
         </div>
 
         <!-- Super Inspiration Section -->
