@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue';
 import { useWindowScroll } from '@vueuse/core';
-import type { SearchResponse } from '~/types';
+import type { SearchResponse, PopularSearch, PopularSearchResponse } from '~/types';
 
 const config = useRuntimeConfig();
 const route = useRoute();
@@ -12,6 +12,8 @@ const products = ref<any[]>([]);
 const inspirations = ref<any[]>([]);
 const page = ref(1);
 const loading = ref(false);
+const popularSearchesLoading = ref(false);
+const popularSearches = ref<PopularSearch[]>([]);
 const hasNext = ref(true);
 const searchDuration = ref<number | null>(null);
 const searchProvider = ref('pinecone'); // 'pinecone' | 'elasticsearch'
@@ -37,7 +39,7 @@ const fetchData = async (reset = false) => {
   try {
     const startTime = performance.now();
     
-    const endpoint = searchProvider.value === 'elasticsearch' ? '/search-es' : '/search';
+    const endpoint = searchProvider.value === 'elasticsearch' ? '/search-es-rerank' : '/search';
     
     // Auto-correction logic
     if (reset && autoCorrect.value && searchQuery.value.trim()) {
@@ -110,9 +112,36 @@ const onSearch = () => {
     fetchData(true);
 }
 
+const fetchPopularSearches = async () => {
+    popularSearchesLoading.value = true;
+    try {
+        console.log('Fetching popular searches...');
+        const response = await $fetch<PopularSearchResponse>(`${config.public.apiBase}/popular-searches`, {
+            params: { limit: 10 }
+        });
+        console.log('Popular searches response:', response);
+        
+        if (response && response.success && response.results) {
+            popularSearches.value = response.results;
+        } else {
+             console.warn('Popular searches response format invalid or unsuccessful:', response);
+        }
+    } catch (error) {
+        console.error("Error fetching popular searches:", error);
+    } finally {
+        popularSearchesLoading.value = false;
+    }
+}
+
+const onSelectPopularSearch = (term: string) => {
+    searchQuery.value = term;
+    onSearch();
+}
+
 // Initial fetch
 onMounted(() => {
     fetchData(true);
+    fetchPopularSearches();
 });
 
 // Watch query param change (e.g. browser back button)
@@ -197,6 +226,14 @@ onUnmounted(() => {
                 <InspirationCard v-for="(item, index) in inspirations" :key="index" :inspiration="item" />
             </div>
         </div>
+
+        <!-- Popular Searches Section -->
+        <PopularSearches 
+            v-if="!searchQuery && products.length === 0" 
+            :searches="popularSearches" 
+            :loading="popularSearchesLoading" 
+            @select="onSelectPopularSearch" 
+        />
 
         <!-- Product List Section -->
         <div>

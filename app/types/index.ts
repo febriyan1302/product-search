@@ -58,3 +58,13 @@ export interface SearchResponse {
     results: SearchResults;
     pagination: Pagination;
 }
+
+export interface PopularSearch {
+    term: string;
+    count: number;
+}
+
+export interface PopularSearchResponse {
+    success: boolean;
+    results: PopularSearch[];
+}
