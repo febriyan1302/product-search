@@ -22,7 +22,7 @@ export default defineNuxtConfig({
       }
     },
     components: {
-      include: ['Card', 'Button', 'InputText', 'IconField', 'InputIcon']
+      include: ['Card', 'Button', 'InputText', 'IconField', 'InputIcon', 'InputSwitch', 'Dialog', 'Toast']
     }
   },
   vite: {

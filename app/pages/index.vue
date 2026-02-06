@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
 import { useWindowScroll } from '@vueuse/core';
-import type { SearchResponse, PopularSearch, PopularSearchResponse } from '~/types';
+import { useToast } from 'primevue/usetoast';
+import type { SearchResponse, PopularSearch, PopularSearchResponse, CacheClearResponse } from '~/types';
 
 const config = useRuntimeConfig();
 const route = useRoute();
@@ -18,7 +19,11 @@ const hasNext = ref(true);
 const searchDuration = ref<number | null>(null);
 const searchProvider = ref('pinecone'); // 'pinecone' | 'elasticsearch'
 const autoCorrect = ref(true);
+const rerank = ref(true);
 const correctionMessage = ref('');
+const showCacheDialog = ref(false);
+const clearingCache = ref(false);
+const toast = useToast();
 
 const { y } = useWindowScroll();
 
@@ -68,7 +73,8 @@ const fetchData = async (reset = false) => {
       params: {
         query: searchQuery.value,
         page: page.value,
-        page_size: 10
+        page_size: 10,
+        rerank: rerank.value
       }
     });
 
@@ -138,6 +144,27 @@ const onSelectPopularSearch = (term: string) => {
     onSearch();
 }
 
+const clearCache = async () => {
+    clearingCache.value = true;
+    try {
+        const response = await $fetch<CacheClearResponse>(`${config.public.apiBase}/search/cache`, {
+            method: 'DELETE'
+        });
+        
+        if (response && response.success) {
+             toast.add({ severity: 'success', summary: 'Success', detail: response.message, life: 3000 });
+        } else {
+             toast.add({ severity: 'error', summary: 'Error', detail: response.message || 'Failed to clear cache', life: 3000 });
+        }
+    } catch (error) {
+         console.error("Error clearing cache:", error);
+         toast.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while clearing cache', life: 3000 });
+    } finally {
+        clearingCache.value = false;
+        showCacheDialog.value = false;
+    }
+}
+
 // Initial fetch
 onMounted(() => {
     fetchData(true);
@@ -157,10 +184,14 @@ watch(searchProvider, () => {
     fetchData(true);
 });
 
+// Watch rerank change
+watch(rerank, () => {
+    fetchData(true);
+});
+
 
 // Infinite Scroll Logic
 // Simple implementation: Check if bottom of page is reached
-import { onMounted, onUnmounted } from 'vue';
 
 const handleScroll = () => {
   const bottomOfWindow = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.offsetHeight - 500; // Trigger 500px before bottom
@@ -197,13 +228,31 @@ onUnmounted(() => {
             </div>
         </div>
         
-        <div class="flex items-center justify-between px-2">
-             <div class="flex items-center gap-2 text-white text-sm">
-                <label for="auto-correct" class="cursor-pointer select-none">Auto Spelling Correction</label>
-                 <InputSwitch id="auto-correct" v-model="autoCorrect" />
+        <div class="grid grid-cols-2 gap-3 px-1">
+             <div class="flex items-center justify-between bg-gray-800 p-2 rounded-lg border border-gray-700/50">
+                <label for="auto-correct" class="cursor-pointer select-none text-xs text-gray-300">Auto Correction</label>
+                 <InputSwitch id="auto-correct" v-model="autoCorrect" style="transform: scale(0.8);" />
+            </div>
+            <div class="flex items-center justify-between bg-gray-800 p-2 rounded-lg border border-gray-700/50">
+                <label for="enable-rerank" class="cursor-pointer select-none text-xs text-gray-300">Rerank</label>
+                 <InputSwitch id="enable-rerank" v-model="rerank" style="transform: scale(0.8);" />
             </div>
         </div>
+        
+        <div class="px-1">
+            <Button label="Clear Cache" icon="pi pi-trash" size="small" severity="danger" outlined class="w-full" @click="showCacheDialog = true" />
+        </div>
     </div>
+
+    <Dialog v-model:visible="showCacheDialog" modal header="Confirm Action" :style="{ width: '25rem' }">
+        <span class="text-gray-300 block mb-8">Are you sure you want to clear the search cache?</span>
+        <div class="flex justify-end gap-2">
+            <Button type="button" label="Cancel" severity="secondary" @click="showCacheDialog = false"></Button>
+            <Button type="button" label="Clear" severity="danger" @click="clearCache" :loading="clearingCache"></Button>
+        </div>
+    </Dialog>
+
+    <Toast position="bottom-center" />
 
     <div class="p-4 flex-1 overflow-y-auto">
         <!-- Search Info Bar -->

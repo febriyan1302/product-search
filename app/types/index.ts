@@ -68,3 +68,8 @@ export interface PopularSearchResponse {
     success: boolean;
     results: PopularSearch[];
 }
+
+export interface CacheClearResponse {
+    success: boolean;
+    message: string;
+}
