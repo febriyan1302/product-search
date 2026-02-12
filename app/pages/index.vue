@@ -2,11 +2,17 @@
 import { ref, reactive, watch, onMounted, onUnmounted } from 'vue';
 import { useWindowScroll } from '@vueuse/core';
 import { useToast } from 'primevue/usetoast';
-import type { SearchResponse, PopularSearch, PopularSearchResponse, CacheClearResponse } from '~/types';
+import type { SearchResponse, PopularSearch, PopularSearchResponse, CacheClearResponse, RecommendationProduct, RecommendationResponse } from '~/types';
 
 const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
+
+// User ID (cookie-based)
+const userIdCookie = useCookie('user_id', { maxAge: 60 * 60 * 24 * 365 }); // 1 year
+const showUserModal = ref(false);
+const userNameInput = ref('');
+const userId = ref(userIdCookie.value || '');
 
 const searchQuery = ref(route.query.query?.toString() || '');
 const products = ref<any[]>([]);
@@ -24,6 +30,29 @@ const correctionMessage = ref('');
 const showCacheDialog = ref(false);
 const clearingCache = ref(false);
 const toast = useToast();
+
+// Recommendations state
+const recommendations = ref<RecommendationProduct[]>([]);
+const recommendationsLoading = ref(false);
+const recommendationSource = ref('');
+const recommendationHistory = ref<string[]>([]);
+
+// Save user name to cookie
+const saveUserName = () => {
+    const name = userNameInput.value.trim();
+    if (!name) return;
+    userIdCookie.value = name;
+    userId.value = name;
+    showUserModal.value = false;
+    userNameInput.value = '';
+    toast.add({ severity: 'success', summary: 'Welcome!', detail: `Halo, ${name}! Rekomendasi produk akan disesuaikan untukmu.`, life: 3000 });
+};
+
+// Open modal to change name
+const changeUserName = () => {
+    userNameInput.value = userId.value;
+    showUserModal.value = true;
+};
 
 const { y } = useWindowScroll();
 
@@ -69,13 +98,18 @@ const fetchData = async (reset = false) => {
          correctionMessage.value = '';
     }
 
-    const { data } = await useFetch<SearchResponse>(`${config.public.apiBase}${endpoint}`, {
-      params: {
+    const fetchParams: Record<string, any> = {
         query: searchQuery.value,
         page: page.value,
         page_size: 10,
         rerank: rerank.value
-      }
+    };
+    if (userId.value) {
+        fetchParams.user_id = userId.value;
+    }
+
+    const { data } = await useFetch<SearchResponse>(`${config.public.apiBase}${endpoint}`, {
+      params: fetchParams
     });
 
     const endTime = performance.now();
@@ -118,6 +152,10 @@ const onSearch = () => {
     fetchData(true);
 }
 
+const goHome = () => {
+    window.location.href = '/';
+}
+
 const fetchPopularSearches = async () => {
     popularSearchesLoading.value = true;
     try {
@@ -136,6 +174,25 @@ const fetchPopularSearches = async () => {
         console.error("Error fetching popular searches:", error);
     } finally {
         popularSearchesLoading.value = false;
+    }
+}
+
+const fetchRecommendations = async () => {
+    if (!userId.value) return;
+    recommendationsLoading.value = true;
+    try {
+        const response = await $fetch<RecommendationResponse>(`${config.public.apiBase}/recommendations`, {
+            params: { user_id: userId.value, limit: 100 }
+        });
+        if (response && response.success && response.results) {
+            recommendations.value = response.results;
+            recommendationSource.value = response.source || '';
+            recommendationHistory.value = response.history_used || [];
+        }
+    } catch (error) {
+        console.error('Error fetching recommendations:', error);
+    } finally {
+        recommendationsLoading.value = false;
     }
 }
 
@@ -167,8 +224,13 @@ const clearCache = async () => {
 
 // Initial fetch
 onMounted(() => {
+    // Show modal if user_id cookie is not set
+    if (!userIdCookie.value) {
+        showUserModal.value = true;
+    }
     fetchData(true);
     fetchPopularSearches();
+    fetchRecommendations();
 });
 
 // Watch query param change (e.g. browser back button)
@@ -212,9 +274,57 @@ onUnmounted(() => {
 
 <template>
   <div class="max-w-md mx-auto bg-gray-900 min-h-screen shadow-2xl overflow-hidden flex flex-col border-x border-gray-800">
+    <!-- User Name Modal -->
+    <Dialog v-model:visible="showUserModal" :closable="!!userId" modal header="Selamat Datang! 👋" :style="{ width: '22rem' }" :pt="{ mask: { class: 'backdrop-blur-sm' } }">
+        <div class="flex flex-col gap-4">
+            <p class="text-gray-300 text-sm leading-relaxed">
+                Masukkan nama kamu untuk mendapatkan <strong class="text-green-400">rekomendasi produk</strong> yang dipersonalisasi berdasarkan riwayat pencarianmu.
+            </p>
+            <div class="flex flex-col gap-2">
+                <label for="user-name-input" class="text-sm font-semibold text-gray-200">Nama</label>
+                <InputText 
+                    id="user-name-input" 
+                    v-model="userNameInput" 
+                    placeholder="Contoh: Fajar" 
+                    class="w-full bg-gray-800 border-gray-700 text-white placeholder-gray-500 focus:ring-green-500 focus:border-green-500" 
+                    @keydown.enter="saveUserName" 
+                />
+            </div>
+            <Button 
+                label="Simpan" 
+                icon="pi pi-check" 
+                class="w-full" 
+                :disabled="!userNameInput.trim()" 
+                @click="saveUserName" 
+            />
+        </div>
+    </Dialog>
+
     <!-- Search Header -->
     <div class="sticky top-0 z-50 bg-gray-900 p-4 shadow-md border-b border-gray-800 flex flex-col gap-3">
+        <!-- Greeting -->
+        <div v-if="userId" class="flex items-center justify-between px-1">
+            <span class="text-sm text-gray-300">
+                Hi, <strong class="text-green-400">{{ userId }}</strong> 👋
+            </span>
+            <button 
+                class="text-xs text-gray-500 hover:text-green-400 transition-colors cursor-pointer flex items-center gap-1" 
+                @click="changeUserName"
+            >
+                <i class="pi pi-pencil text-[10px]"></i>
+                Ubah
+            </button>
+        </div>
+
         <div class="flex items-center gap-2">
+            <button 
+                v-if="searchQuery" 
+                class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-800 border border-gray-700 text-gray-400 hover:text-green-400 hover:border-green-500 transition-all flex items-center justify-center cursor-pointer" 
+                @click="goHome"
+                title="Back to Home"
+            >
+                <i class="pi pi-arrow-left text-sm"></i>
+            </button>
             <IconField iconPosition="left" class="flex-1">
                 <InputIcon class="pi pi-search text-gray-400" />
                 <InputText v-model="searchQuery" placeholder="Search products..." class="w-full rounded-full bg-gray-800 border-gray-700 text-white placeholder-gray-500 px-10 py-3 focus:ring-green-500 focus:border-green-500" @keydown.enter="onSearch" />
@@ -284,8 +394,33 @@ onUnmounted(() => {
             @select="onSelectPopularSearch" 
         />
 
+        <!-- Recommendations Section -->
+        <div v-if="!searchQuery && products.length === 0 && recommendations.length > 0" class="mb-8">
+            <div class="mb-4">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="pi pi-thumbs-up text-green-400"></i>
+                    Your Product Recommendations
+                </h2>
+                <p v-if="recommendationHistory.length > 0" class="text-xs text-gray-400 mt-1">
+                    Based on your search history: 
+                    <span v-for="(term, i) in recommendationHistory" :key="i">
+                        <strong class="text-green-400">{{ term }}</strong><span v-if="i < recommendationHistory.length - 1">, </span>
+                    </span>
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <ProductCard v-for="product in recommendations" :key="product.id" :product="product" />
+            </div>
+        </div>
+
+        <!-- Recommendations Loading -->
+        <div v-if="!searchQuery && products.length === 0 && recommendationsLoading" class="py-8 text-center">
+            <i class="pi pi-spin pi-spinner text-green-500 text-2xl"></i>
+            <p class="text-gray-400 text-sm mt-2">Memuat rekomendasi...</p>
+        </div>
+
         <!-- Product List Section -->
-        <div>
+        <div v-if="searchQuery || products.length > 0">
             <h2 class="text-lg font-bold mb-4 text-white">Products</h2>
             <div class="grid grid-cols-2 gap-4">
                 <ProductCard v-for="product in products" :key="product.id" :product="product" />

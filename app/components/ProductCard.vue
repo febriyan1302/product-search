@@ -2,7 +2,7 @@
 const props = defineProps<{
   product: {
     id: string;
-    boosted: boolean;
+    boosted?: boolean;
     score?: number;
     document: {
       product_name: string;

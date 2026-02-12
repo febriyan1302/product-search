@@ -73,3 +73,32 @@ export interface CacheClearResponse {
     success: boolean;
     message: string;
 }
+
+export interface RecommendationProduct {
+    id: string;
+    score: number;
+    document: {
+        id: string;
+        product_name: string;
+        description: string;
+        price: number;
+        category: string;
+        images: string[];
+        product_sugar_level: string;
+        product_tags: string[];
+        store: string;
+        promos: string;
+        created_at: string;
+        updated_at: string;
+        updated_by: string;
+        selling_price: number;
+    };
+}
+
+export interface RecommendationResponse {
+    success: boolean;
+    user_id: string;
+    source: string;
+    history_used: string[];
+    results: RecommendationProduct[];
+}
