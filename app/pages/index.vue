@@ -23,13 +23,19 @@ const popularSearchesLoading = ref(false);
 const popularSearches = ref<PopularSearch[]>([]);
 const hasNext = ref(true);
 const searchDuration = ref<number | null>(null);
-const searchProvider = ref('pinecone'); // 'pinecone' | 'elasticsearch'
+const searchProvider = ref('elasticsearch'); // 'pinecone' | 'elasticsearch'
 const autoCorrect = ref(true);
 const rerank = ref(true);
 const correctionMessage = ref('');
 const showCacheDialog = ref(false);
 const clearingCache = ref(false);
 const toast = useToast();
+
+// Suggestion state
+const suggestions = ref<string[]>([]);
+const showSuggestions = ref(false);
+const activeSuggestionIndex = ref(-1);
+const searchWrapperRef = ref<HTMLElement | null>(null);
 
 // Recommendations state
 const recommendations = ref<RecommendationProduct[]>([]);
@@ -148,11 +154,60 @@ const fetchData = async (reset = false) => {
 };
 
 const onSearch = () => {
+    showSuggestions.value = false;
     router.push({ query: { ...route.query, query: searchQuery.value } });
     fetchData(true);
 }
 
+const fetchSuggestions = async (q: string) => {
+    if (!q.trim()) {
+        suggestions.value = [];
+        showSuggestions.value = false;
+        return;
+    }
+    try {
+        const res = await $fetch<{ suggestions: string[] }>(`${config.public.apiBase}/suggestions`, { params: { q } });
+        suggestions.value = res.suggestions ?? [];
+        showSuggestions.value = suggestions.value.length > 0;
+        activeSuggestionIndex.value = -1;
+    } catch {
+        suggestions.value = [];
+        showSuggestions.value = false;
+    }
+};
+
+let suggestTimer: ReturnType<typeof setTimeout>;
+
+const onSearchKeydown = (e: KeyboardEvent) => {
+    if (!showSuggestions.value) {
+        if (e.key === 'Enter') onSearch();
+        return;
+    }
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeSuggestionIndex.value = (activeSuggestionIndex.value + 1) % suggestions.value.length;
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeSuggestionIndex.value = (activeSuggestionIndex.value - 1 + suggestions.value.length) % suggestions.value.length;
+    } else if (e.key === 'Enter') {
+        if (activeSuggestionIndex.value >= 0) {
+            onSelectSuggestion(suggestions.value[activeSuggestionIndex.value]!);
+        } else {
+            onSearch();
+        }
+    } else if (e.key === 'Escape') {
+        showSuggestions.value = false;
+    }
+};
+
+const onSelectSuggestion = (term: string) => {
+    searchQuery.value = term;
+    showSuggestions.value = false;
+    onSearch();
+};
+
 const goHome = () => {
+    showSuggestions.value = false;
     window.location.href = '/';
 }
 
@@ -251,6 +306,12 @@ watch(rerank, () => {
     fetchData(true);
 });
 
+// Debounced suggestion fetch on typing
+watch(searchQuery, (val) => {
+    clearTimeout(suggestTimer);
+    suggestTimer = setTimeout(() => fetchSuggestions(val), 250);
+});
+
 
 // Infinite Scroll Logic
 // Simple implementation: Check if bottom of page is reached
@@ -262,12 +323,21 @@ const handleScroll = () => {
   }
 };
 
+const handleClickOutside = (e: MouseEvent) => {
+    if (searchWrapperRef.value && !searchWrapperRef.value.contains(e.target as Node)) {
+        showSuggestions.value = false;
+    }
+};
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
+  document.addEventListener('mousedown', handleClickOutside);
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
+  document.removeEventListener('mousedown', handleClickOutside);
+  clearTimeout(suggestTimer);
 });
 
 </script>
@@ -325,17 +395,24 @@ onUnmounted(() => {
             >
                 <i class="pi pi-arrow-left text-sm"></i>
             </button>
-            <IconField iconPosition="left" class="flex-1">
-                <InputIcon class="pi pi-search text-gray-400" />
-                <InputText v-model="searchQuery" placeholder="Search products..." class="w-full rounded-full bg-gray-800 border-gray-700 text-white placeholder-gray-500 px-10 py-3 focus:ring-green-500 focus:border-green-500" @keydown.enter="onSearch" />
-            </IconField>
-            
-            <div class="ml-2 flex items-center gap-2">
-                <select v-model="searchProvider" class="bg-gray-800 text-white text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 border border-gray-700">
-                    <option value="pinecone">Pinecone</option>
-                    <option value="elasticsearch">Elasticsearch</option>
-                </select>
+            <div class="flex-1 relative" ref="searchWrapperRef">
+                <IconField iconPosition="left" class="w-full">
+                    <InputIcon class="pi pi-search text-gray-400" />
+                    <InputText v-model="searchQuery" placeholder="Search products..." class="w-full rounded-full bg-gray-800 border-gray-700 text-white placeholder-gray-500 px-10 py-3 focus:ring-green-500 focus:border-green-500" @keydown="onSearchKeydown" @focus="showSuggestions = suggestions.length > 0" />
+                </IconField>
+                <SearchSuggestions
+                    v-if="showSuggestions"
+                    :suggestions="suggestions"
+                    :active-index="activeSuggestionIndex"
+                    @select="onSelectSuggestion"
+                    @hover="activeSuggestionIndex = $event"
+                />
             </div>
+            
+            <select v-model="searchProvider" class="flex-shrink-0 bg-gray-800 text-white text-sm rounded-full border border-gray-700 py-3 px-3 focus:ring-green-500 focus:border-green-500 appearance-none cursor-pointer">
+                <option value="pinecone">Pinecone</option>
+                <option value="elasticsearch">Elasticsearch</option>
+            </select>
         </div>
         
         <div class="grid grid-cols-2 gap-3 px-1">
